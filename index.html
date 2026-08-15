@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Destination OSF · A&R Strategic Map</title>
+<style>
+  :root{ color-scheme: light;
+    --blue:#00539b; --blue-dk:#553621; --teal:#0093b2; --gold:#b9975b;
+    --ink:#1c2733; --muted:#5a6b7b; --line:#dbe3ec; --bg:#f4f7fa; --card:#ffffff;
+    --strategic:#00539b; --operational:#0093b2; --enabling:#5b7fa6;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:'Segoe UI',Helvetica,Arial,sans-serif;line-height:1.45;}
+  .wrap{max-width:1080px;margin:0 auto;padding:20px 18px 60px;}
+  .brand{font-size:11px;letter-spacing:2.5px;color:var(--blue);font-weight:700;text-transform:uppercase;}
+  h1{font-size:24px;margin:5px 0 3px;color:var(--blue-dk);font-weight:800;}
+  .tagline{font-size:13px;color:var(--muted);margin-bottom:16px;}
+  /* North star */
+  .northstar{background:linear-gradient(100deg,var(--blue-dk),var(--blue-dk) 99%,var(--blue-dk));
+    color:#fff;border-radius:12px;padding:16px 20px;display:flex;flex-wrap:wrap;gap:20px;align-items:center;margin-bottom:18px;}
+  .ns-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;opacity:.85;font-weight:700;}
+  .ns-text{font-size:13.5px;flex:1;min-width:300px;}
+  .ns-text b{color:#ffe6b8;}
+  .ns-stat{text-align:center;padding:0 14px;border-left:1px solid rgba(255,255,255,.3);}
+  .ns-stat .big{font-size:26px;font-weight:800;color:#ffe6b8;line-height:1;}
+  .ns-stat .cap{font-size:9px;letter-spacing:.5px;text-transform:uppercase;opacity:.85;margin-top:4px;}
+  /* Filter */
+  .filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px;}
+  .filters .flabel{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-right:4px;}
+  .chip{border:1px solid var(--line);background:#fff;border-radius:20px;padding:5px 13px;font-size:12px;
+    cursor:pointer;color:var(--ink);font-weight:600;transition:all .15s;}
+  .chip:hover{border-color:var(--blue);}
+  .chip.active{color:#fff;border-color:transparent;}
+  .chip.active[data-cat="all"]{background:var(--blue-dk);}
+  .chip.active[data-cat="strategic"]{background:var(--strategic);}
+  .chip.active[data-cat="operational"]{background:var(--operational);}
+  .chip.active[data-cat="enabling"]{background:var(--enabling);}
+  .expand-all{margin-left:auto;font-size:11.5px;color:var(--blue);background:none;border:none;cursor:pointer;font-weight:700;}
+  /* Goals */
+  .goals{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;}
+  @media(max-width:720px){.goals{grid-template-columns:1fr;} }
+  .goal{background:var(--card);border:1px solid var(--line);border-radius:11px;overflow:hidden;transition:opacity .2s;}
+  .goal.hidden{display:none;}
+  .goal-head{padding:12px 15px;cursor:pointer;display:flex;align-items:center;gap:12px;color:#fff;position:relative;}
+  .goal[data-cat="strategic"] .goal-head{background:linear-gradient(120deg,#00539b,#0069b8);}
+  .goal[data-cat="operational"] .goal-head{background:linear-gradient(120deg,#0093b2,#00a7c9);}
+  .goal[data-cat="enabling"] .goal-head{background:linear-gradient(120deg,#5b7fa6,#6f93b8);}
+  .g-num{font-size:22px;font-weight:800;opacity:.55;min-width:22px;}
+  .g-meta{flex:1;}
+  .g-cat{font-size:9px;letter-spacing:1.3px;text-transform:uppercase;opacity:.9;font-weight:700;}
+  .g-title{font-size:15px;font-weight:800;line-height:1.2;margin-top:2px;}
+  .chev{font-size:15px;transition:transform .2s;opacity:.9;}
+  .goal.open .chev{transform:rotate(90deg);}
+  .goal-body{max-height:0;overflow:hidden;transition:max-height .3s ease;}
+  .goal.open .goal-body{max-height:900px;}
+  .goal-inner{padding:6px 15px 14px;}
+  .strat{border-top:1px solid var(--line);padding:9px 0 3px;}
+  .strat:first-child{border-top:none;}
+  .strat-h{font-size:12.5px;font-weight:700;color:var(--blue-dk);display:flex;gap:7px;align-items:baseline;}
+  .strat-h .mark{color:var(--gold);font-weight:800;}
+  .tactics{list-style:none;margin:5px 0 4px;padding:0;}
+  .tactics li{font-size:12px;color:var(--ink);padding:2px 0 2px 15px;position:relative;}
+  .tactics li::before{content:"";position:absolute;left:3px;top:8px;width:5px;height:5px;border-radius:50%;background:var(--teal);}
+  /* Section */
+  .sec-title{font-size:13px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);
+    font-weight:700;margin:26px 0 10px;border-bottom:2px solid var(--line);padding-bottom:6px;}
+  /* Metrics */
+  .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+  @media(max-width:720px){.metrics{grid-template-columns:repeat(2,1fr);} }
+  .metric{background:#fff;border:1px solid var(--line);border-radius:10px;padding:11px 12px;text-align:center;}
+  .metric .mv{font-size:16px;font-weight:800;color:var(--blue-dk);}
+  .metric .mv .ar{color:var(--gold);}
+  .metric .mc{font-size:10.5px;color:var(--muted);margin-top:3px;}
+  /* Roadmap */
+  .roadmap{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+  @media(max-width:720px){.roadmap{grid-template-columns:1fr;} }
+  .phase{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px;}
+  .phase.p1{border-top:4px solid var(--blue);}
+  .phase.p2{border-top:4px solid var(--teal);}
+  .phase.p3{border-top:4px solid var(--gold);}
+  .phase .pt{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--gold);font-weight:700;}
+  .phase h4{margin:3px 0 6px;font-size:13px;color:var(--blue-dk);}
+  .phase ul{margin:0;padding-left:16px;}
+  .phase li{font-size:11.5px;margin-bottom:3px;}
+  .foot{margin-top:26px;border-top:2px solid var(--blue);padding-top:10px;font-size:11px;color:var(--muted);}
+  .foot b{color:var(--blue-dk);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">Destination OSF · OSF HealthCare</div>
+  <h1>Academics &amp; Research — Strategic Map</h1>
+  <div class="tagline">Goals → Strategies → Tactics for the fifth, enabling destination: the Jump Research Institute</div>
+
+  <div class="northstar">
+    <div>
+      <div class="ns-label">North Star · 2035</div>
+    </div>
+    <div class="ns-text"><b>Greatest Care and Love</b> requires access to the best care and treatments. Academics and research are therefore extensions of the clinical mission, not adjacent activities. Research is successful when it meaningfully changes what OSF can do for patients. <hr>Become a <b>regional destination for complex care</b> and a <b>nationally recognized research leader</b> — expanding local access to cutting-edge therapies, establishing OSF as a referral destination, and attracting world-class talent. <b></b></div>
+    <div class="ns-stat"><div class="big">$140M</div><div class="cap">Portfolio · FY10</div></div>
+    <div class="ns-stat"><div class="big">8</div><div class="cap">Reinforcing returns</div></div>
+  </div>
+
+  <div class="filters">
+    <span class="flabel">Filter</span>
+    <button class="chip active" data-cat="all">All 6 goals</button>
+    <button class="chip" data-cat="strategic">Strategic</button>
+    <button class="chip" data-cat="operational">Operational</button>
+    <button class="chip" data-cat="enabling">Enabling</button>
+    <button class="expand-all" id="toggleAll">Expand all ▾</button>
+  </div>
+
+  <div class="goals" id="goals"></div>
+
+  <div class="sec-title">Enterprise Growth Metrics · FY1 → FY10</div>
+  <div class="metrics" id="metrics"></div>
+
+  <div class="sec-title">Implementation Roadmap</div>
+  <div class="roadmap">
+    <div class="phase p1"><div class="pt">Phase 1 · &lt; 6 months</div><h4>Create visibility, accountability &amp; readiness</h4>
+      <ul><li>VP of Research &amp; proactive ROC with defined decision rights</li><li>Defined strategy, priority service lines &amp; growth objectives</li><li>Research GL &amp; P&amp;L framework for spending visibility</li><li>Compliant effort reporting &amp; streamlined IRB deployed</li><li>Core systems selected &amp; deployed (Cayuse, CTMS, eReg)</li></ul></div>
+    <div class="phase p2"><div class="pt">Phase 2 · 6–12 months</div><h4>Build the capabilities required for growth</h4>
+      <ul><li>Framework to evaluate, prioritize &amp; manage partnerships</li><li>Readiness criteria to qualify non-SFMC spoke sites</li><li>Standardized operating model with KPI tracking &amp; intake</li><li>Centralized contracting, budgeting &amp; post-award admin</li><li>Physician-investigator talent model with protected time</li></ul></div>
+    <div class="phase p3"><div class="pt">Phase 3 · 12 months +</div><h4>Scale research across the ministry</h4>
+      <ul><li>Consolidated research operations across all institutes</li><li>QA &amp; monitoring function for enterprise quality</li><li>Expanded CRC &amp; research support workforce</li><li>Research active across qualified spoke sites</li><li>Analytics, lab/Rx capacity &amp; AI supporting execution</li></ul></div>
+  </div>
+
+  <div class="foot">
+    <b>Measures of success:</b> Best Care (measurable outcomes) · Best People (physician-scientist recruitment &amp; retention) · Best Plan (diversified, sustainable portfolio).
+    &nbsp;<b>Board goal:</b> sustainable $140M competitive extramural portfolio by FY10 with nationally recognized programs in cancer, cardiovascular, neuroscience &amp; pediatrics.
+  </div>
+</div>
+
+<script>
+const GOALS = [
+  { n:1, cat:"strategic", catLabel:"Strategic", title:"Unified Research Strategy & Governance", strategies:[
+    { s:"Adopt a strong-center governance model", t:["Hire a VP of Research to own enterprise research growth","Empower the Research Oversight Council (ROC) — decision rights, membership, cadence"]},
+    { s:"Define the enterprise research portfolio", t:["Set therapeutic-area mix, phase mix, and target scale","Anchor signature programs to the four institutes: Cancer, CV, Neuro, Children's"]},
+    { s:"Charter the Jump Research Institute", t:["Ratify charter, Governing Council & standing committees","Set the 10-year growth arc: $35M → $140M active portfolio"]},
+  ]},
+  { n:2, cat:"strategic", catLabel:"Strategic · Funding", title:"Diversify & Grow Competitive Funding", strategies:[
+    { s:"Run funding as a strategic portfolio, not transactions", t:["Shift from submission support to competitive positioning","Operate the four dashboards: Opportunity, Portfolio, Project, Leadership"]},
+    { s:"Build a majority industry- & grant-funded budget", t:["Diversify across federal, state, foundation, industry & community","Layer targeted philanthropic campaigns + intentional ministry subsidy"]},
+    { s:"Align pursuit to Destination priorities", t:["Scholarship Councils for each institute match opportunities to priorities","Grow submissions 150→350, awards 35→90, award rate to ≥25%"]},
+  ]},
+  { n:3, cat:"operational", catLabel:"Operational", title:"Build the Research Operating Engine", strategies:[
+    { s:"Standardize execution across the ministry", t:["Centralized activation function + enterprise SOPs","Scale the <90-day activation advantage across all service lines"]},
+    { s:"Establish an enterprise research P&L", t:["Dedicated research GL + per-study P&L (from ~50% today to full visibility)","Centralized contracting, budgeting & consistent cost recovery"]},
+    { s:"Right-size the research support workforce", t:["CRC / pharmacist staffing model that scales with the portfolio","Central study intake & prioritization with KPI tracking"]},
+  ]},
+  { n:4, cat:"operational", catLabel:"Operational · Academics", title:"Attract Talent & Advance Academic Affairs", strategies:[
+    { s:"Stand up a physician-investigator talent model", t:["Protected-time policy, compensation model & career pathways","Grow PIs 70→145; career-development awards 5→20"]},
+    { s:"Drive UME & GME academic affairs", t:["Embed learners in a research-rich environment; faculty appointments via partners","Connect the research enterprise to the education & recruitment pipeline"]},
+    { s:"Use research access as the recruitment magnet", t:["Recruit patients, providers & thought-leaders — the 8 reinforcing returns","Build internal pride, professionalism & a self-reinforcing culture"]},
+  ]},
+  { n:5, cat:"enabling", catLabel:"Enabling", title:"Technology, Data & Scientific Cores", strategies:[
+    { s:"Deploy one integrated research tech platform", t:["Cayuse, enterprise CTMS & eRegulatory as a single source of truth","Replace Excel / shared-drive / email tracking across sites"]},
+    { s:"Build analytics, biostatistics & AI capacity", t:["Structured request prioritization across research types","AI-enabled trial matching & patient identification as next-horizon"]},
+    { s:"Invest in scientific cores & facilities", t:["Expand investigational pharmacy & laboratory capacity","Size cores to the study types & volumes the portfolio demands"]},
+  ]},
+  { n:6, cat:"enabling", catLabel:"Enabling · Compliance", title:"Compliance, Integrity & Trust", strategies:[
+    { s:"Strengthen compliance & QA infrastructure", t:["Federally compliant effort reporting & proactive post-approval monitoring","Streamlined, non-duplicative IRB pathways to accelerate activation"]},
+    { s:"Safeguard research integrity", t:["Scientific review, COI management & responsible conduct of research","Audit-ready quality oversight that attracts the highest-consequence studies"]},
+    { s:"Keep mission & safety non-negotiable", t:["Every activity aligned to OSF's Catholic mission & community benefit","Research strengthens — never compromises — quality & safety fundamentals"]},
+  ]},
+];
+const METRICS = [
+  ["$35M","$140M","Active portfolio"],["A","B","Annual submissions"],
+  ["35","90","Competitive awards"],["23%","≥25%","Award rate"],
+  ["X","Y","Principal investigators"],["0","10","Program / center grants"],
+  ["U","V","Peer-reviewed publications"],["a","b","Career-development awards"],
+];
+const goalsEl = document.getElementById('goals');
+GOALS.forEach(g=>{
+  const strat = g.strategies.map(st=>`
+    <div class="strat"><div class="strat-h"><span class="mark">◆</span>${st.s}</div>
+      <ul class="tactics">${st.t.map(x=>`<li>${x}</li>`).join('')}</ul></div>`).join('');
+  const el = document.createElement('div');
+  el.className='goal'; el.dataset.cat=g.cat;
+  el.innerHTML=`<div class="goal-head"><div class="g-num">${g.n}</div>
+      <div class="g-meta"><div class="g-cat">${g.catLabel}</div><div class="g-title">${g.title}</div></div>
+      <div class="chev">▶</div></div>
+      <div class="goal-body"><div class="goal-inner">${strat}</div></div>`;
+  el.querySelector('.goal-head').addEventListener('click',()=>el.classList.toggle('open'));
+  goalsEl.appendChild(el);
+});
+const metricsEl=document.getElementById('metrics');
+METRICS.forEach(m=>{const d=document.createElement('div');d.className='metric';
+  d.innerHTML=`<div class="mv">${m[0]} <span class="ar">→</span> ${m[1]}</div><div class="mc">${m[2]}</div>`;
+  metricsEl.appendChild(d);});
+document.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>{
+  document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
+  c.classList.add('active');
+  const cat=c.dataset.cat;
+  document.querySelectorAll('.goal').forEach(g=>{
+    g.classList.toggle('hidden', cat!=='all' && g.dataset.cat!==cat);
+  });
+}));
+let allOpen=false;
+document.getElementById('toggleAll').addEventListener('click',function(){
+  allOpen=!allOpen;
+  document.querySelectorAll('.goal').forEach(g=>g.classList.toggle('open',allOpen));
+  this.textContent=allOpen?'Collapse all ▴':'Expand all ▾';
+});
+</script>
+</body>
+</html>
