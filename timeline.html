@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Destination OSF · A&R Implementation Timeline</title>
+<style>
+  :root{ color-scheme: light;
+    --brown:#5E4A34; --brown-dk:#3F3123; --brown-mid:#7A5E42;
+    --osf-blue:#00576B; --osf-blue-lt:#0a7183;
+    --osf-green:#4E8209; --osf-green-lt:#5f9c14;
+    --pampas:#F2EFEB; --tuatara:#333230;
+    --gold:#B9975B; --muted:#6f665c; --line:#e2ddd4; --card:#ffffff;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--pampas);color:var(--tuatara);
+    font-family:'Segoe UI',Helvetica,Arial,sans-serif;line-height:1.45;}
+  .wrap{max-width:1180px;margin:0 auto;padding:20px 18px 70px;}
+  .back{font-size:12px;color:var(--osf-blue);text-decoration:none;font-weight:700;}
+  .back:hover{text-decoration:underline;}
+  .brand{font-size:11px;letter-spacing:2.5px;color:var(--brown);font-weight:700;text-transform:uppercase;margin-top:8px;}
+  h1{font-size:23px;margin:5px 0 3px;color:var(--brown-dk);font-weight:800;}
+  .tagline{font-size:13px;color:var(--muted);margin-bottom:16px;}
+  /* Controls */
+  .controls{background:#F6E8C4;border:1px solid #E4CF9E;border-left:6px solid var(--gold);border-radius:11px;
+    padding:13px 18px;display:flex;flex-wrap:wrap;gap:16px 22px;align-items:center;margin-bottom:8px;}
+  .controls label{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--brown);font-weight:700;
+    display:block;margin-bottom:4px;}
+  select{font-size:14px;padding:6px 10px;border:1px solid #d9c79c;border-radius:7px;background:#fff;color:var(--brown-dk);font-weight:600;}
+  .ctl-note{font-size:11.5px;color:var(--brown-mid);flex:1;min-width:220px;}
+  .btn{font-size:12px;font-weight:700;padding:7px 13px;border-radius:20px;border:1px solid var(--brown-mid);
+    background:#fff;color:var(--brown-dk);cursor:pointer;}
+  .btn:hover{background:#fff6e6;}
+  /* Selected-task editor */
+  .editor{display:none;background:#fff;border:1px solid var(--line);border-left:6px solid var(--osf-blue);
+    border-radius:11px;padding:11px 16px;margin-bottom:8px;align-items:center;gap:14px;flex-wrap:wrap;}
+  .editor.show{display:flex;}
+  .editor .en{font-size:13px;font-weight:800;color:var(--brown-dk);flex:1;min-width:200px;}
+  .editor .grp{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted);}
+  .step{width:26px;height:26px;border-radius:7px;border:1px solid var(--line);background:#fff;
+    font-size:15px;font-weight:800;cursor:pointer;color:var(--brown-dk);line-height:1;}
+  .step:hover{background:var(--pampas);}
+  .editor .val{font-weight:800;color:var(--brown-dk);min-width:56px;text-align:center;}
+  .editor .close{margin-left:auto;font-size:12px;color:var(--osf-blue);background:none;border:none;cursor:pointer;font-weight:700;}
+  /* Legend */
+  .legend{display:flex;flex-wrap:wrap;gap:16px;align-items:center;font-size:11.5px;color:var(--muted);margin:10px 0 6px;}
+  .legend .k{display:flex;align-items:center;gap:6px;}
+  .sw{width:14px;height:12px;border-radius:3px;display:inline-block;}
+  .hint{margin-left:auto;font-size:11px;color:var(--brown-mid);font-style:italic;}
+  /* Gantt */
+  .gantt-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:11px;background:#fff;}
+  .gantt{min-width:900px;}
+  .grow{display:flex;align-items:stretch;border-bottom:1px solid #f0ece4;}
+  .glabel{width:290px;min-width:290px;padding:7px 12px;font-size:12px;display:flex;align-items:center;gap:8px;
+    border-right:1px solid var(--line);}
+  .glabel .gn{font-size:10px;font-weight:800;color:#fff;background:var(--brown-mid);border-radius:50%;
+    width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .track{position:relative;flex:1;}
+  .months{display:flex;position:sticky;top:0;z-index:3;background:#fff;border-bottom:1px solid var(--line);}
+  .mcell{border-right:1px solid #f0ece4;font-size:9.5px;color:var(--muted);text-align:center;padding:5px 0 4px;flex-shrink:0;}
+  .mcell.q1{background:#faf7f1;}
+  .yrow{display:flex;background:#f6f1e9;border-bottom:1px solid var(--line);}
+  .ycell{font-size:10px;font-weight:800;color:var(--brown);text-align:center;padding:3px 0;border-right:1px solid var(--line);flex-shrink:0;letter-spacing:.5px;}
+  .phase-band{padding:6px 12px;font-size:10.5px;font-weight:800;letter-spacing:1px;text-transform:uppercase;
+    color:#fff;}
+  .phase-band.p1{background:var(--brown);}
+  .phase-band.p2{background:var(--osf-blue);}
+  .phase-band.p3{background:var(--osf-green);}
+  .bar{position:absolute;top:6px;height:22px;border-radius:5px;cursor:pointer;display:flex;align-items:center;
+    padding:0 8px;color:#fff;font-size:10.5px;font-weight:700;white-space:nowrap;overflow:hidden;
+    box-shadow:0 1px 3px rgba(0,0,0,.15);transition:filter .12s, box-shadow .12s;}
+  .bar:hover{filter:brightness(1.08);box-shadow:0 2px 7px rgba(0,0,0,.25);}
+  .bar.selected{outline:3px solid var(--gold);outline-offset:1px;}
+  .bar.strategic{background:var(--brown);}
+  .bar.operational{background:var(--osf-blue);}
+  .bar.enabling{background:var(--osf-green);}
+  .bar.priority{background:repeating-linear-gradient(45deg,var(--osf-blue),var(--osf-blue) 9px,#0a6c85 9px,#0a6c85 18px);
+    outline:2px solid var(--gold);}
+  .gridlines{position:absolute;inset:0;pointer-events:none;}
+  .gl{position:absolute;top:0;bottom:0;border-right:1px solid #f4f0e8;}
+  .gl.qy{border-right:1px solid #e7e0d4;}
+  /* Tooltip */
+  #tip{position:fixed;z-index:20;pointer-events:none;background:var(--brown-dk);color:#fff;font-size:11.5px;
+    padding:8px 11px;border-radius:8px;max-width:280px;box-shadow:0 4px 16px rgba(0,0,0,.3);display:none;line-height:1.4;}
+  #tip b{color:#f0d9a8;}
+  .summary{font-size:12px;color:var(--muted);margin-top:12px;}
+  .summary b{color:var(--brown-dk);}
+  .foot{margin-top:22px;border-top:2px solid var(--brown);padding-top:9px;font-size:11px;color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← Back to Strategic Map</a>
+  <div class="brand">Destination OSF · OSF HealthCare</div>
+  <h1>Academics &amp; Research — Implementation Timeline</h1>
+  <div class="tagline">Interactive Gantt · dependencies cascade from the program start you choose. Illustrative durations — adjust as plans firm up.</div>
+
+  <div class="controls">
+    <div>
+      <label>Program start — month</label>
+      <select id="startMonth"></select>
+    </div>
+    <div>
+      <label>Program start — year</label>
+      <select id="startYear"></select>
+    </div>
+    <div class="ctl-note">Change the start and every dependent task reschedules automatically. Click any bar to nudge its duration or add a delay and watch downstream work cascade.</div>
+    <button class="btn" id="resetBtn">Reset adjustments</button>
+  </div>
+
+  <div class="editor" id="editor">
+    <div class="en" id="edName">—</div>
+    <div class="grp">Duration
+      <button class="step" data-k="dur" data-d="-1">−</button>
+      <span class="val" id="edDur">—</span>
+      <button class="step" data-k="dur" data-d="1">+</button>
+    </div>
+    <div class="grp">Delay / lag
+      <button class="step" data-k="lag" data-d="-1">−</button>
+      <span class="val" id="edLag">—</span>
+      <button class="step" data-k="lag" data-d="1">+</button>
+    </div>
+    <button class="close" id="edClose">Done</button>
+  </div>
+
+  <div class="legend">
+    <span class="k"><i class="sw" style="background:var(--brown)"></i> Strategic</span>
+    <span class="k"><i class="sw" style="background:var(--osf-blue)"></i> Operational</span>
+    <span class="k"><i class="sw" style="background:var(--osf-green)"></i> Enabling</span>
+    <span class="k"><i class="sw" style="background:repeating-linear-gradient(45deg,var(--osf-blue),var(--osf-blue) 5px,#0a6c85 5px,#0a6c85 10px);outline:1px solid var(--gold)"></i> Priority initiative</span>
+    <span class="hint">hover a bar for dates &amp; dependencies</span>
+  </div>
+
+  <div class="gantt-scroll">
+    <div class="gantt" id="gantt"></div>
+  </div>
+
+  <div class="summary" id="summary"></div>
+
+  <div class="foot">
+    Sequencing follows the three-phase roadmap: <b>Phase 1</b> stands up governance, finance visibility, compliance &amp; core systems; <b>Phase 2</b> builds the operating model, workforce &amp; contracts; <b>Phase 3</b> scales research across the ministry. Durations and dependencies are planning assumptions for discussion.
+  </div>
+</div>
+
+<div id="tip"></div>
+
+<script>
+// ---- Task model: id, name, category, phase, duration (months), dependencies ----
+const TASKS = [
+  {id:"gov",  name:"Research leadership & governance (VP of Research, ROC)", cat:"strategic",  phase:1, dur:4, deps:[]},
+  {id:"strat",name:"Enterprise research strategy & priority service lines",  cat:"strategic",  phase:1, dur:3, deps:["gov"]},
+  {id:"fin",  name:"Financial visibility (research GL, per-study P&L)",       cat:"operational",phase:1, dur:4, deps:["gov"]},
+  {id:"comp", name:"Compliance & QA (effort reporting, post-approval mon.)", cat:"enabling",   phase:1, dur:5, deps:["gov"]},
+  {id:"tech", name:"Research tech platforms (Cayuse, CTMS, eReg)",           cat:"enabling",   phase:1, dur:6, deps:["gov"]},
+
+  {id:"opmodel", name:"Standardized operating model (intake, SOPs)",         cat:"operational",phase:2, dur:5, deps:["strat","tech"]},
+  {id:"workforce",name:"Research workforce model (protected time, CRC staffing)",cat:"operational",phase:2,dur:5,deps:["gov","fin"]},
+  {id:"contracts",name:"Redesign clinician-researcher contracts (employed physicians)",cat:"operational",phase:2,dur:6,deps:["workforce","fin"],priority:true},
+  {id:"partner", name:"Partnership framework (evaluate, prioritize, manage)", cat:"strategic",  phase:2, dur:4, deps:["strat"]},
+  {id:"sites",   name:"Spoke-site readiness criteria (qualify non-SFMC sites)",cat:"operational",phase:2,dur:4,deps:["opmodel"]},
+
+  {id:"deploy", name:"Deploy operating model across institutes",             cat:"operational",phase:3, dur:6, deps:["opmodel","sites"]},
+  {id:"consol", name:"Consolidated research operations function",            cat:"operational",phase:3, dur:6, deps:["deploy"]},
+  {id:"qa",     name:"QA & monitoring function (enterprise quality)",        cat:"enabling",   phase:3, dur:5, deps:["comp","deploy"]},
+  {id:"scalewf",name:"Scale CRC workforce & data analytics",                 cat:"operational",phase:3, dur:6, deps:["workforce","tech"]},
+  {id:"cores",  name:"Expand analytics & lab/Rx capacity",                   cat:"enabling",   phase:3, dur:6, deps:["tech","fin"]},
+  {id:"ai",     name:"AI trial matching & patient identification",           cat:"enabling",   phase:3, dur:6, deps:["tech","cores"]},
+];
+const PHASES = {1:"Phase 1 · Foundation (< 6 months to launch)",2:"Phase 2 · Build the capabilities for growth",3:"Phase 3 · Scale across the ministry"};
+const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const COLW = 34;
+// user adjustments: {dur:delta, lag:delta}
+const adj = {}; TASKS.forEach(t=>adj[t.id]={dur:0,lag:0});
+let startMonth=0, startYear=2026, selectedId=null;
+
+const byId = Object.fromEntries(TASKS.map(t=>[t.id,t]));
+function eff(t){ return {dur:Math.max(1,t.dur+adj[t.id].dur), lag:Math.max(0,adj[t.id].lag)}; }
+const _s={}, _e={};
+function startOff(id){
+  if(_s[id]!==undefined) return _s[id];
+  const t=byId[id], e=eff(t);
+  let base = t.deps.length ? Math.max(...t.deps.map(d=>endOff(d))) : 0;
+  return _s[id]= base + e.lag;
+}
+function endOff(id){ if(_e[id]!==undefined) return _e[id]; return _e[id]= startOff(id)+eff(byId[id]).dur; }
+function recompute(){ for(const k in _s) delete _s[k]; for(const k in _e) delete _e[k]; }
+
+function fmtDate(off){
+  const total = startYear*12 + startMonth + off;
+  const y=Math.floor(total/12), m=total%12;
+  return MONTHS[m]+" "+y;
+}
+
+function build(){
+  recompute();
+  const horizon = Math.max(...TASKS.map(t=>endOff(t.id)));
+  const g=document.getElementById('gantt');
+  g.innerHTML="";
+  const trackW = horizon*COLW;
+
+  // Year header
+  const yhead=document.createElement('div'); yhead.className='grow';
+  const yspacer=document.createElement('div'); yspacer.className='glabel'; yspacer.style.background="#f6f1e9"; yspacer.innerHTML="<b style='font-size:11px;color:var(--brown)'>Timeline</b>"; yhead.appendChild(yspacer);
+  const ytrack=document.createElement('div'); ytrack.className='track'; ytrack.style.width=trackW+"px";
+  const yrow=document.createElement('div'); yrow.className='yrow';
+  let i=0;
+  while(i<horizon){
+    const total=startYear*12+startMonth+i; const y=Math.floor(total/12); const m=total%12;
+    const remain=Math.min(12-m, horizon-i);
+    const yc=document.createElement('div'); yc.className='ycell'; yc.style.width=(remain*COLW)+"px"; yc.textContent=y;
+    yrow.appendChild(yc); i+=remain;
+  }
+  ytrack.appendChild(yrow);
+  // Month header
+  const mrow=document.createElement('div'); mrow.className='months';
+  for(let k=0;k<horizon;k++){
+    const total=startYear*12+startMonth+k; const m=total%12;
+    const mc=document.createElement('div'); mc.className='mcell'+((m%3===0)?' q1':''); mc.style.width=COLW+"px";
+    mc.textContent=MONTHS[m][0]; mrow.appendChild(mc);
+  }
+  ytrack.appendChild(mrow);
+  yhead.appendChild(ytrack);
+  g.appendChild(yhead);
+
+  [1,2,3].forEach(ph=>{
+    const band=document.createElement('div'); band.className='phase-band p'+ph; band.textContent=PHASES[ph];
+    g.appendChild(band);
+    TASKS.filter(t=>t.phase===ph).forEach(t=>{
+      const row=document.createElement('div'); row.className='grow';
+      const lab=document.createElement('div'); lab.className='glabel';
+      lab.innerHTML=`<span class="gn">${TASKS.indexOf(t)+1}</span><span>${t.name}</span>`;
+      row.appendChild(lab);
+      const track=document.createElement('div'); track.className='track'; track.style.width=trackW+"px";
+      // gridlines
+      const gl=document.createElement('div'); gl.className='gridlines';
+      for(let k=0;k<=horizon;k++){ const l=document.createElement('div'); l.className='gl'+((k%3===0)?' qy':''); l.style.left=(k*COLW)+"px"; gl.appendChild(l);}
+      track.appendChild(gl);
+      const s=startOff(t.id), e=endOff(t.id);
+      const bar=document.createElement('div');
+      bar.className='bar '+t.cat+(t.priority?' priority':'')+(selectedId===t.id?' selected':'');
+      bar.style.left=(s*COLW)+"px"; bar.style.width=Math.max(COLW, (e-s)*COLW-3)+"px";
+      bar.textContent=t.name.split(" (")[0];
+      bar.addEventListener('click',(ev)=>{ ev.stopPropagation(); selectTask(t.id); });
+      bar.addEventListener('mousemove',(ev)=>showTip(ev,t,s,e));
+      bar.addEventListener('mouseleave',hideTip);
+      track.appendChild(bar);
+      row.appendChild(track);
+      g.appendChild(row);
+    });
+  });
+
+  const horizonYrs=(horizon/12);
+  document.getElementById('summary').innerHTML=
+    `<b>Full build-out:</b> ${horizon} months (~${horizonYrs.toFixed(1)} years) — ${fmtDate(0)} to ${fmtDate(horizon)}. `+
+    `The <b>clinician-researcher contract redesign</b> runs ${fmtDate(startOff('contracts'))} – ${fmtDate(endOff('contracts'))}, gated by the workforce model and financial visibility.`;
+}
+
+function selectTask(id){ selectedId=id; const t=byId[id];
+  const ed=document.getElementById('editor'); ed.classList.add('show');
+  document.getElementById('edName').textContent=t.name;
+  document.getElementById('edDur').textContent=eff(t).dur+" mo";
+  document.getElementById('edLag').textContent=adj[id].lag+" mo";
+  build();
+}
+function showTip(ev,t,s,e){
+  const tip=document.getElementById('tip');
+  const depNames = t.deps.length? t.deps.map(d=>byId[d].name.split(" (")[0]).join(", ") : "None (can start at program launch)";
+  tip.innerHTML=`<b>${t.name}</b><br>${fmtDate(s)} → ${fmtDate(e)} · ${eff(t).dur} mo<br><b>Depends on:</b> ${depNames}`;
+  tip.style.display='block';
+  tip.style.left=Math.min(ev.clientX+14, window.innerWidth-290)+"px";
+  tip.style.top=(ev.clientY+16)+"px";
+}
+function hideTip(){ document.getElementById('tip').style.display='none'; }
+
+// Controls
+const smSel=document.getElementById('startMonth'), sySel=document.getElementById('startYear');
+MONTHS.forEach((m,i)=>{const o=document.createElement('option');o.value=i;o.textContent=m;smSel.appendChild(o);});
+for(let y=2026;y<=2030;y++){const o=document.createElement('option');o.value=y;o.textContent=y;sySel.appendChild(o);}
+smSel.value=0; sySel.value=2026;
+smSel.addEventListener('change',()=>{startMonth=+smSel.value;build();});
+sySel.addEventListener('change',()=>{startYear=+sySel.value;build();});
+document.getElementById('resetBtn').addEventListener('click',()=>{
+  TASKS.forEach(t=>adj[t.id]={dur:0,lag:0}); selectedId=null;
+  document.getElementById('editor').classList.remove('show'); build();
+});
+document.querySelectorAll('.step').forEach(b=>b.addEventListener('click',()=>{
+  if(!selectedId) return;
+  const k=b.dataset.k, d=+b.dataset.d;
+  adj[selectedId][k]+=d;
+  if(k==='dur' && byId[selectedId].dur+adj[selectedId].dur<1) adj[selectedId].dur=1-byId[selectedId].dur;
+  if(k==='lag' && adj[selectedId].lag<0) adj[selectedId].lag=0;
+  selectTask(selectedId);
+}));
+document.getElementById('edClose').addEventListener('click',()=>{
+  selectedId=null; document.getElementById('editor').classList.remove('show'); build();
+});
+build();
+</script>
+</body>
+</html>
