@@ -49,20 +49,20 @@
   .hint{margin-left:auto;font-size:11px;color:var(--brown-mid);font-style:italic;}
   /* Gantt */
   .gantt-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:11px;background:#fff;}
-  .gantt{min-width:900px;}
+  .gantt{}
   .grow{display:flex;align-items:stretch;border-bottom:1px solid #f0ece4;}
-  .glabel{width:290px;min-width:290px;padding:7px 12px;font-size:12px;display:flex;align-items:center;gap:8px;
-    border-right:1px solid var(--line);}
+  .glabel{width:290px;min-width:290px;flex:0 0 290px;padding:7px 12px;font-size:12px;display:flex;align-items:center;gap:8px;
+    border-right:1px solid var(--line);position:sticky;left:0;background:#fff;z-index:2;}
   .glabel .gn{font-size:10px;font-weight:800;color:#fff;background:var(--brown-mid);border-radius:50%;
     width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
-  .track{position:relative;flex:1;}
-  .months{display:flex;position:sticky;top:0;z-index:3;background:#fff;border-bottom:1px solid var(--line);}
+  .track{position:relative;flex:0 0 auto;}
+  .months{display:flex;background:#fff;border-bottom:1px solid var(--line);}
   .mcell{border-right:1px solid #f0ece4;font-size:9.5px;color:var(--muted);text-align:center;padding:5px 0 4px;flex-shrink:0;}
   .mcell.q1{background:#faf7f1;}
   .yrow{display:flex;background:#f6f1e9;border-bottom:1px solid var(--line);}
   .ycell{font-size:10px;font-weight:800;color:var(--brown);text-align:center;padding:3px 0;border-right:1px solid var(--line);flex-shrink:0;letter-spacing:.5px;}
   .phase-band{padding:6px 12px;font-size:10.5px;font-weight:800;letter-spacing:1px;text-transform:uppercase;
-    color:#fff;}
+    color:#fff;position:sticky;left:0;}
   .phase-band.p1{background:var(--brown);}
   .phase-band.p2{background:var(--osf-blue);}
   .phase-band.p3{background:var(--osf-green);}
@@ -168,10 +168,11 @@ const TASKS = [
 ];
 const PHASES = {1:"Phase 1 · Foundation (< 6 months to launch)",2:"Phase 2 · Build the capabilities for growth",3:"Phase 3 · Scale across the ministry"};
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-const COLW = 34;
+const COLW = 30;
+const MIN_MONTHS = 60; // 5-year grid
 // user adjustments: {dur:delta, lag:delta}
 const adj = {}; TASKS.forEach(t=>adj[t.id]={dur:0,lag:0});
-let startMonth=0, startYear=2026, selectedId=null;
+let startMonth=9, startYear=2026, selectedId=null; // default October 2026
 
 const byId = Object.fromEntries(TASKS.map(t=>[t.id,t]));
 function eff(t){ return {dur:Math.max(1,t.dur+adj[t.id].dur), lag:Math.max(0,adj[t.id].lag)}; }
@@ -193,25 +194,26 @@ function fmtDate(off){
 
 function build(){
   recompute();
-  const horizon = Math.max(...TASKS.map(t=>endOff(t.id)));
+  const dataHorizon = Math.max(...TASKS.map(t=>endOff(t.id)));
+  const horizon = Math.max(dataHorizon, MIN_MONTHS);
   const g=document.getElementById('gantt');
   g.innerHTML="";
   const trackW = horizon*COLW;
+  g.style.width=(290+trackW)+"px";
 
-  // Year header
+  // Year + month header
   const yhead=document.createElement('div'); yhead.className='grow';
   const yspacer=document.createElement('div'); yspacer.className='glabel'; yspacer.style.background="#f6f1e9"; yspacer.innerHTML="<b style='font-size:11px;color:var(--brown)'>Timeline</b>"; yhead.appendChild(yspacer);
   const ytrack=document.createElement('div'); ytrack.className='track'; ytrack.style.width=trackW+"px";
   const yrow=document.createElement('div'); yrow.className='yrow';
   let i=0;
   while(i<horizon){
-    const total=startYear*12+startMonth+i; const y=Math.floor(total/12); const m=total%12;
+    const total=startYear*12+startMonth+i; const m=total%12; const y=Math.floor(total/12);
     const remain=Math.min(12-m, horizon-i);
     const yc=document.createElement('div'); yc.className='ycell'; yc.style.width=(remain*COLW)+"px"; yc.textContent=y;
     yrow.appendChild(yc); i+=remain;
   }
   ytrack.appendChild(yrow);
-  // Month header
   const mrow=document.createElement('div'); mrow.className='months';
   for(let k=0;k<horizon;k++){
     const total=startYear*12+startMonth+k; const m=total%12;
@@ -231,7 +233,6 @@ function build(){
       lab.innerHTML=`<span class="gn">${TASKS.indexOf(t)+1}</span><span>${t.name}</span>`;
       row.appendChild(lab);
       const track=document.createElement('div'); track.className='track'; track.style.width=trackW+"px";
-      // gridlines
       const gl=document.createElement('div'); gl.className='gridlines';
       for(let k=0;k<=horizon;k++){ const l=document.createElement('div'); l.className='gl'+((k%3===0)?' qy':''); l.style.left=(k*COLW)+"px"; gl.appendChild(l);}
       track.appendChild(gl);
@@ -249,9 +250,9 @@ function build(){
     });
   });
 
-  const horizonYrs=(horizon/12);
+  const yrs=(dataHorizon/12);
   document.getElementById('summary').innerHTML=
-    `<b>Full build-out:</b> ${horizon} months (~${horizonYrs.toFixed(1)} years) — ${fmtDate(0)} to ${fmtDate(horizon)}. `+
+    `<b>Full build-out:</b> ${dataHorizon} months (~${yrs.toFixed(1)} years) — ${fmtDate(0)} to ${fmtDate(dataHorizon)}. `+
     `The <b>clinician-researcher contract redesign</b> runs ${fmtDate(startOff('contracts'))} – ${fmtDate(endOff('contracts'))}, gated by the workforce model and financial visibility.`;
 }
 
@@ -275,8 +276,8 @@ function hideTip(){ document.getElementById('tip').style.display='none'; }
 // Controls
 const smSel=document.getElementById('startMonth'), sySel=document.getElementById('startYear');
 MONTHS.forEach((m,i)=>{const o=document.createElement('option');o.value=i;o.textContent=m;smSel.appendChild(o);});
-for(let y=2026;y<=2030;y++){const o=document.createElement('option');o.value=y;o.textContent=y;sySel.appendChild(o);}
-smSel.value=0; sySel.value=2026;
+for(let y=2026;y<=2032;y++){const o=document.createElement('option');o.value=y;o.textContent=y;sySel.appendChild(o);}
+smSel.value=startMonth; sySel.value=startYear;
 smSel.addEventListener('change',()=>{startMonth=+smSel.value;build();});
 sySel.addEventListener('change',()=>{startYear=+sySel.value;build();});
 document.getElementById('resetBtn').addEventListener('click',()=>{
