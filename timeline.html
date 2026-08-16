@@ -20,7 +20,14 @@
   .back:hover{text-decoration:underline;}
   .brand{font-size:11px;letter-spacing:2.5px;color:var(--brown);font-weight:700;text-transform:uppercase;margin-top:8px;}
   h1{font-size:23px;margin:5px 0 3px;color:var(--brown-dk);font-weight:800;}
-  .tagline{font-size:13px;color:var(--muted);margin-bottom:16px;}
+  .tagline{font-size:13px;color:var(--muted);margin-bottom:14px;}
+  /* Plain-language explainer */
+  .explain{background:#fff;border:1px solid var(--line);border-left:6px solid var(--osf-blue);border-radius:11px;
+    padding:13px 16px;margin-bottom:14px;font-size:12.7px;}
+  .explain h3{margin:0 0 6px;font-size:11.5px;letter-spacing:1px;text-transform:uppercase;color:var(--osf-blue);}
+  .explain p{margin:0 0 7px;}
+  .explain p:last-child{margin-bottom:0;}
+  .explain b{color:var(--brown-dk);}
   /* Controls */
   .controls{background:#F6E8C4;border:1px solid #E4CF9E;border-left:6px solid var(--gold);border-radius:11px;
     padding:13px 18px;display:flex;flex-wrap:wrap;gap:16px 22px;align-items:center;margin-bottom:8px;}
@@ -95,6 +102,13 @@
   <h1>Academics &amp; Research — Implementation Timeline</h1>
   <div class="tagline">Interactive Gantt · dependencies cascade from the program start you choose. Illustrative durations — adjust as plans firm up.</div>
 
+  <div class="explain">
+    <h3>What this shows &amp; how to read it</h3>
+    <p>This is the <b>schedule</b> for the plan — when each piece of work happens, and what has to finish before the next piece can start. Each <b>bar is one task</b>; its length is how many months that task takes. Tasks are grouped into three phases, top to bottom.</p>
+    <p><b>Pick a start month and year</b> at the top. Because many tasks depend on earlier ones, changing the start moves everything that follows — that is the "cascade." The colors match the map: <b style="color:var(--brown)">Strategy &amp; governance</b>, <b style="color:var(--osf-blue)">Operations</b>, <b style="color:var(--osf-green)">Enabling</b>. The striped bar with the gold outline is the <b>priority</b> item — redesigning clinician-researcher contracts.</p>
+    <p><b>Hover a bar</b> to see its dates and what it waits on. <b>Click a bar</b> to make that task longer or add a delay, and watch everything downstream shift. Durations are planning estimates for discussion, not commitments.</p>
+  </div>
+
   <div class="controls">
     <div>
       <label>Program start — month</label>
@@ -124,8 +138,8 @@
   </div>
 
   <div class="legend">
-    <span class="k"><i class="sw" style="background:var(--brown)"></i> Strategic</span>
-    <span class="k"><i class="sw" style="background:var(--osf-blue)"></i> Operational</span>
+    <span class="k"><i class="sw" style="background:var(--brown)"></i> Strategy &amp; governance</span>
+    <span class="k"><i class="sw" style="background:var(--osf-blue)"></i> Operations</span>
     <span class="k"><i class="sw" style="background:var(--osf-green)"></i> Enabling</span>
     <span class="k"><i class="sw" style="background:repeating-linear-gradient(45deg,var(--osf-blue),var(--osf-blue) 5px,#0a6c85 5px,#0a6c85 10px);outline:1px solid var(--gold)"></i> Priority initiative</span>
     <span class="hint">hover a bar for dates &amp; dependencies</span>
@@ -170,7 +184,6 @@ const PHASES = {1:"Phase 1 · Foundation (< 6 months to launch)",2:"Phase 2 · B
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const COLW = 30;
 const MIN_MONTHS = 60; // 5-year grid
-// user adjustments: {dur:delta, lag:delta}
 const adj = {}; TASKS.forEach(t=>adj[t.id]={dur:0,lag:0});
 let startMonth=9, startYear=2026, selectedId=null; // default October 2026
 
@@ -201,7 +214,6 @@ function build(){
   const trackW = horizon*COLW;
   g.style.width=(290+trackW)+"px";
 
-  // Year + month header
   const yhead=document.createElement('div'); yhead.className='grow';
   const yspacer=document.createElement('div'); yspacer.className='glabel'; yspacer.style.background="#f6f1e9"; yspacer.innerHTML="<b style='font-size:11px;color:var(--brown)'>Timeline</b>"; yhead.appendChild(yspacer);
   const ytrack=document.createElement('div'); ytrack.className='track'; ytrack.style.width=trackW+"px";
@@ -273,7 +285,6 @@ function showTip(ev,t,s,e){
 }
 function hideTip(){ document.getElementById('tip').style.display='none'; }
 
-// Controls
 const smSel=document.getElementById('startMonth'), sySel=document.getElementById('startYear');
 MONTHS.forEach((m,i)=>{const o=document.createElement('option');o.value=i;o.textContent=m;smSel.appendChild(o);});
 for(let y=2026;y<=2032;y++){const o=document.createElement('option');o.value=y;o.textContent=y;sySel.appendChild(o);}

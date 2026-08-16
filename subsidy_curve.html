@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Destination OSF · Bending Subsidy Curve</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js" integrity="sha384-iU8HYtnGQ8Cy4zl7gbNMOhsDTTKX02BTXptVP/vqAWIaTfM7isw76iyZCsjL2eVi" crossorigin="anonymous"></script>
+<style>
+  :root{ color-scheme: light;
+    --brown:#5E4A34; --brown-dk:#3F3123; --brown-mid:#7A5E42;
+    --osf-blue:#00576B; --osf-blue-lt:#0a7183;
+    --osf-green:#4E8209; --pampas:#F2EFEB; --tuatara:#333230;
+    --gold:#B9975B; --muted:#6f665c; --line:#e2ddd4; --card:#fff; }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--pampas);color:var(--tuatara);
+    font-family:'Segoe UI',Helvetica,Arial,sans-serif;line-height:1.45;}
+  .wrap{max-width:1000px;margin:0 auto;padding:20px 18px 60px;}
+  .back{font-size:12px;color:var(--osf-blue);text-decoration:none;font-weight:700;}
+  .back:hover{text-decoration:underline;}
+  .brand{font-size:11px;letter-spacing:2.5px;color:var(--brown);font-weight:700;text-transform:uppercase;margin-top:8px;}
+  h1{font-size:23px;margin:5px 0 3px;color:var(--brown-dk);font-weight:800;}
+  .tagline{font-size:13px;color:var(--muted);margin-bottom:14px;}
+  /* Plain-language explainer */
+  .explain{background:#fff;border:1px solid var(--line);border-left:6px solid var(--osf-blue);border-radius:11px;
+    padding:13px 16px;margin-bottom:16px;font-size:12.7px;}
+  .explain h3{margin:0 0 6px;font-size:11.5px;letter-spacing:1px;text-transform:uppercase;color:var(--osf-blue);}
+  .explain p{margin:0 0 7px;}
+  .explain p:last-child{margin-bottom:0;}
+  .explain b{color:var(--brown-dk);}
+  .explain .key{display:flex;flex-wrap:wrap;gap:8px 16px;margin:4px 0 3px;}
+  .explain .key span{display:flex;align-items:center;gap:6px;font-size:11.7px;}
+  .explain .key .sw{width:12px;height:12px;border-radius:3px;display:inline-block;}
+  .explain .key .ln{width:16px;height:0;border-top:3px solid var(--gold);display:inline-block;}
+  /* headline stats */
+  .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px;}
+  @media(max-width:720px){.stats{grid-template-columns:repeat(2,1fr);} }
+  .stat{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px;text-align:center;}
+  .stat .v{font-size:19px;font-weight:800;color:var(--brown-dk);}
+  .stat .v.pct{color:var(--gold);}
+  .stat .l{font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-top:3px;line-height:1.2;}
+  /* chart */
+  .chartbox{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px 10px;height:400px;position:relative;}
+  /* controls */
+  .controls{background:#F6E8C4;border:1px solid #E4CF9E;border-left:6px solid var(--gold);border-radius:11px;
+    padding:14px 18px;margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:16px 26px;}
+  @media(max-width:720px){.controls{grid-template-columns:1fr;} }
+  .ctl label{font-size:11.5px;font-weight:700;color:var(--brown);display:flex;justify-content:space-between;margin-bottom:3px;}
+  .ctl label b{color:var(--brown-dk);}
+  .ctl .h{font-size:11px;color:var(--brown-mid);margin-bottom:6px;}
+  input[type=range]{width:100%;accent-color:var(--osf-blue);}
+  .seg{display:flex;gap:6px;}
+  .seg button{flex:1;font-size:11.5px;font-weight:700;padding:6px 4px;border:1px solid #d9c79c;background:#fff;
+    color:var(--brown-dk);border-radius:7px;cursor:pointer;}
+  .seg button.on{background:var(--osf-blue);color:#fff;border-color:transparent;}
+  .reset{grid-column:1 / -1;justify-self:end;}
+  .reset button{font-size:11.5px;font-weight:700;padding:6px 14px;border-radius:18px;border:1px solid var(--brown-mid);
+    background:#fff;color:var(--brown-dk);cursor:pointer;}
+  .note{font-size:11.5px;color:var(--muted);margin-top:14px;line-height:1.5;}
+  .note b{color:var(--brown-dk);}
+  .foot{margin-top:14px;border-top:2px solid var(--brown);padding-top:9px;font-size:10.5px;color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← Back to Strategic Map</a>
+  <div class="brand">Destination OSF · OSF HealthCare</div>
+  <h1>The Bending Subsidy Curve</h1>
+  <div class="tagline">Why OSF's own investment in research shrinks — as a share of the whole — even as the program grows.</div>
+
+  <div class="explain">
+    <h3>What this shows — in plain terms</h3>
+    <p>Research is paid for two ways. Most comes from <b>outside</b> — grants, government, and industry sponsors. OSF adds its own money, the <b>ministry subsidy</b>, to cover the parts that outside funding does not (start-up costs, systems, and staff time not yet billed to a study). Each bar below is one year; the two colors add up to the total spent on research that year:</p>
+    <div class="key">
+      <span><i class="sw" style="background:var(--osf-blue)"></i> <b>Outside funding</b> — grants + industry (grows over time)</span>
+      <span><i class="sw" style="background:var(--brown-mid)"></i> <b>OSF subsidy</b> — the money OSF puts in</span>
+      <span><i class="ln"></i> <b>Subsidy share</b> — OSF's slice, right-hand scale</span>
+    </div>
+    <p><b>The point:</b> OSF's subsidy is a <b>temporary bridge, not a forever cost.</b> As outside funding grows and we get better at billing study costs back to sponsors, OSF's share (the gold line) <b>bends downward</b>. The sliders let you test "what if we recover more costs," "what if we hire more researchers," or "what if the program grows faster."</p>
+  </div>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="chartbox"><canvas id="chart"></canvas></div>
+
+  <div class="controls">
+    <div class="ctl">
+      <label>Cost-recovery discipline <b id="recV">80%</b></label>
+      <div class="h">How much of study costs we bill back to sponsors and grants. Higher = OSF pays less.</div>
+      <input type="range" id="rec" min="55" max="92" value="80" step="1">
+    </div>
+    <div class="ctl">
+      <label>New researchers we fund <b id="piV">6 PIs</b></label>
+      <div class="h">Investigators we bankroll for ~3 years to get them started (about $0.5M each).</div>
+      <input type="range" id="pi" min="0" max="10" value="6" step="1">
+    </div>
+    <div class="ctl">
+      <label>Core fixed yearly cost <b id="fdnV">$2.25M</b></label>
+      <div class="h">Ongoing cost of research leadership and core staff, regardless of growth.</div>
+      <input type="range" id="fdn" min="180" max="300" value="225" step="5">
+    </div>
+    <div class="ctl">
+      <label>How fast the program grows</label>
+      <div class="h">The path the research portfolio takes toward its ten-year target.</div>
+      <div class="seg" id="scen">
+        <button data-s="cons">Slower</button>
+        <button data-s="base" class="on">Plan ($140M)</button>
+        <button data-s="aggr">Faster</button>
+      </div>
+    </div>
+    <div class="reset"><button id="reset">Reset to plan assumptions</button></div>
+  </div>
+
+  <div class="note" id="dyn"></div>
+
+  <div class="foot">Illustrative / directional model. Portfolio path from the ten-year growth plan ($35M→$140M). Cost, recovery, and start-up assumptions are drawn from the Research Infrastructure Strategy Compendium (Investment Sizing, slides 172–184); figures are planning estimates, not budgeted commitments, and exclude costs already buried in clinical and IT budgets today (physician time, space, enterprise IT).</div>
+</div>
+
+<script>
+const FY = ["FY1","FY2","FY3","FY4","FY5","FY6","FY7","FY8","FY9","FY10"];
+const BASE_PORT = [35,45,58,72,87,101,114,125,133,140];
+let recTarget=0.80, nPI=6, foundational=2.25, scenario="base";
+
+function portfolio(){
+  return BASE_PORT.map((p,i)=>{
+    if(scenario==="cons") return Math.round(p*(1-0.02*i));
+    if(scenario==="aggr") return Math.round(p*(1+0.02*i));
+    return p;
+  });
+}
+function model(){
+  const port=portfolio();
+  const rec=[], A=[], V=[], U=[], subsidy=[], pct=[];
+  const w1=Math.ceil(nPI/2), w2=Math.floor(nPI/2);
+  for(let i=0;i<10;i++){
+    rec[i] = i>=6 ? recTarget : 0.40+(recTarget-0.40)*(i/6);
+    let a=0;
+    if(i<=2) a+=w1*0.5/3;
+    if(i>=1 && i<=3) a+=w2*0.5/3;
+    A[i]=a;
+    V[i]=0.02*port[i];
+    U[i]=V[i]*(1-rec[i]);
+    const it = (i===0)?0.8:0;
+    subsidy[i]=foundational+it+A[i]+U[i];
+    pct[i]=subsidy[i]/(subsidy[i]+port[i])*100;
+  }
+  return {port,subsidy,pct};
+}
+
+let chart;
+function render(){
+  const m=model();
+  const ctx=document.getElementById('chart');
+  const data={
+    labels:FY,
+    datasets:[
+      {type:'bar',label:'Outside funding ($M)',data:m.port,backgroundColor:'#00576B',stack:'s',order:3,borderRadius:3},
+      {type:'bar',label:'OSF subsidy ($M)',data:m.subsidy.map(x=>+x.toFixed(2)),backgroundColor:'#7A5E42',stack:'s',order:2,borderRadius:3},
+      {type:'line',label:'Subsidy share of total (%)',data:m.pct.map(x=>+x.toFixed(1)),yAxisID:'y1',
+        borderColor:'#B9975B',backgroundColor:'#B9975B',borderWidth:3,tension:.35,pointRadius:3,pointBackgroundColor:'#B9975B',order:1}
+    ]
+  };
+  const opts={responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+    scales:{
+      x:{stacked:true,grid:{display:false},ticks:{font:{size:11}}},
+      y:{stacked:true,position:'left',title:{display:true,text:'Research funding ($M)',font:{size:11}},
+         grid:{color:'#f0ece4'},ticks:{font:{size:10}}},
+      y1:{position:'right',min:0,max:Math.max(25,Math.ceil(Math.max(...m.pct)/5)*5),
+         title:{display:true,text:'OSF share (%)',font:{size:11}},grid:{drawOnChartArea:false},
+         ticks:{font:{size:10},callback:v=>v+'%'}}
+    },
+    plugins:{legend:{labels:{font:{size:11},boxWidth:14,usePointStyle:true}},
+      tooltip:{callbacks:{label:c=>{
+        if(c.dataset.yAxisID==='y1') return ' OSF share of total: '+c.parsed.y+'%';
+        return ' '+c.dataset.label.replace(' ($M)','')+': $'+c.parsed.y+'M';
+      }}}}
+  };
+  if(chart){chart.data=data;chart.options=opts;chart.update();}
+  else chart=new Chart(ctx,{data,options:opts});
+
+  const cum=m.subsidy.reduce((a,b)=>a+b,0);
+  const s=document.getElementById('stats');
+  s.innerHTML=`
+    <div class="stat"><div class="v">$${m.subsidy[0].toFixed(1)}M</div><div class="l">Year 1 OSF subsidy</div></div>
+    <div class="stat"><div class="v">$${m.subsidy[9].toFixed(1)}M</div><div class="l">Year 10 OSF subsidy</div></div>
+    <div class="stat"><div class="v pct">${m.pct[0].toFixed(0)}% → ${m.pct[9].toFixed(0)}%</div><div class="l">OSF share, Yr 1 → Yr 10</div></div>
+    <div class="stat"><div class="v">$${cum.toFixed(0)}M</div><div class="l">Total OSF subsidy, 10 yrs</div></div>
+    <div class="stat"><div class="v">$${m.port[9]}M</div><div class="l">Outside funding by Yr 10</div></div>`;
+
+  const leverage=(m.port[9]/m.subsidy[9]).toFixed(0);
+  document.getElementById('dyn').innerHTML=
+    `<b>In one sentence:</b> with these settings, OSF's own investment starts near <b>$${Math.max(...m.subsidy).toFixed(1)}M</b> a year, then eases to <b>$${m.subsidy[9].toFixed(1)}M</b> by Year 10 — falling from <b>${m.pct[0].toFixed(0)}%</b> of all research money down to <b>${m.pct[9].toFixed(0)}%</b>. By Year 10, every $1 OSF puts in sits next to about <b>$${leverage}</b> of outside funding. Total OSF investment over ten years: <b>$${cum.toFixed(0)}M</b> to build a <b>$${m.port[9]}M</b>-a-year research program.`;
+}
+
+const rec=document.getElementById('rec'), pi=document.getElementById('pi'), fdn=document.getElementById('fdn');
+rec.oninput=()=>{recTarget=+rec.value/100;document.getElementById('recV').textContent=rec.value+'%';render();};
+pi.oninput=()=>{nPI=+pi.value;document.getElementById('piV').textContent=pi.value+(pi.value==1?' PI':' PIs');render();};
+fdn.oninput=()=>{foundational=+fdn.value/100;document.getElementById('fdnV').textContent='$'+(foundational).toFixed(2)+'M';render();};
+document.querySelectorAll('#scen button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#scen button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on'); scenario=b.dataset.s; render();
+});
+document.getElementById('reset').onclick=()=>{
+  recTarget=0.80;nPI=6;foundational=2.25;scenario="base";
+  rec.value=80;pi.value=6;fdn.value=225;
+  document.getElementById('recV').textContent='80%';
+  document.getElementById('piV').textContent='6 PIs';
+  document.getElementById('fdnV').textContent='$2.25M';
+  document.querySelectorAll('#scen button').forEach(x=>x.classList.toggle('on',x.dataset.s==='base'));
+  render();
+};
+render();
+</script>
+</body>
+</html>

@@ -27,11 +27,23 @@
     transition:background .15s;}
   .tl-link:hover{background:var(--osf-blue-lt);}
   .tl-link .a{font-size:14px;}
+  .navlinks{display:flex;flex-wrap:wrap;gap:10px;}
   .sec-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin:26px 0 10px;
     border-bottom:2px solid var(--line);padding-bottom:6px;}
   .sec-head .sec-title{margin:0;border:none;padding:0;}
   .sec-head a{font-size:12px;font-weight:700;color:var(--osf-blue);text-decoration:none;}
   .sec-head a:hover{text-decoration:underline;}
+  /* Plain-language explainer */
+  .explain{background:#fff;border:1px solid var(--line);border-left:6px solid var(--osf-blue);border-radius:11px;
+    padding:13px 16px;margin-bottom:16px;font-size:12.7px;}
+  .explain h3{margin:0 0 6px;font-size:11.5px;letter-spacing:1px;text-transform:uppercase;color:var(--osf-blue);}
+  .explain p{margin:0 0 7px;}
+  .explain p:last-child{margin-bottom:0;}
+  .explain b{color:var(--brown-dk);}
+  .explain .key{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:4px;}
+  .explain .key span{display:flex;align-items:center;gap:6px;font-size:11.7px;}
+  .explain .key .sw{width:12px;height:12px;border-radius:3px;display:inline-block;}
+  .subnote{font-size:11.5px;color:var(--muted);margin:-4px 0 10px;font-style:italic;}
   /* North star */
   .northstar{background:#F6E8C4;color:var(--brown-dk);border:1px solid #E4CF9E;border-left:6px solid var(--gold);
     border-radius:12px;padding:16px 22px;display:flex;flex-wrap:wrap;gap:20px;align-items:center;margin-bottom:18px;}
@@ -111,7 +123,11 @@
   <div class="brand">Destination OSF · OSF HealthCare</div>
   <h1>Academics &amp; Research — Strategic Map</h1>
   <div class="tagline">Goals → Strategies → Tactics for the fifth, enabling destination: the Jump Research Institute</div>
-  <a class="tl-link" href="timeline.html"><span class="a">▤</span> View interactive implementation timeline →</a>
+  <div class="navlinks">
+    <a class="tl-link" href="timeline.html"><span class="a">▤</span> Implementation timeline →</a>
+    <a class="tl-link" href="stakeholders.html"><span class="a">◷</span> Stakeholders &amp; required changes →</a>
+    <a class="tl-link" href="subsidy_curve.html"><span class="a">◱</span> Cost &amp; subsidy curve →</a>
+  </div>
 
   <div class="northstar">
     <div>
@@ -122,11 +138,23 @@
     <div class="ns-stat"><div class="big">8</div><div class="cap">Reinforcing returns</div></div>
   </div>
 
+  <div class="explain">
+    <h3>How to read this page</h3>
+    <p>This is OSF's plan for growing research, on one page. <b>Click any goal to open it</b> and see its <b>Strategies</b> (the approach) and <b>Tactics</b> (the specific steps under each). A gold <span class="prio" style="position:relative;top:-1px;">Priority</span> tag flags a step we see as especially important.</p>
+    <p>The colors sort the six goals into three kinds of work. Use the filter buttons to show one kind at a time:</p>
+    <div class="key">
+      <span><i class="sw" style="background:var(--brown)"></i> <b>Strategy &amp; governance</b> — what research we do and who decides</span>
+      <span><i class="sw" style="background:var(--osf-blue)"></i> <b>Operations</b> — how we run research day to day</span>
+      <span><i class="sw" style="background:var(--osf-green)"></i> <b>Enabling</b> — the tools, systems and rules that support it</span>
+    </div>
+    <p style="margin-top:8px;">Lower down, <b>Growth Metrics</b> are the numeric targets we aim for over ten years, and the <b>Roadmap</b> shows what we tackle first, next, and later.</p>
+  </div>
+
   <div class="filters">
     <span class="flabel">Filter</span>
     <button class="chip active" data-cat="all">All 6 goals</button>
-    <button class="chip" data-cat="strategic">Strategic</button>
-    <button class="chip" data-cat="operational">Operational</button>
+    <button class="chip" data-cat="strategic">Strategy &amp; governance</button>
+    <button class="chip" data-cat="operational">Operations</button>
     <button class="chip" data-cat="enabling">Enabling</button>
     <button class="expand-all" id="toggleAll">Expand all ▾</button>
   </div>
@@ -134,10 +162,12 @@
   <div class="goals" id="goals"></div>
 
   <div class="sec-title">Enterprise Growth Metrics · FY1 → FY10</div>
+  <div class="subnote">Ten-year targets — where we want each number to move from (FY1) to (FY10). "TBD" means we're still verifying that figure before we publish it.</div>
   <div class="metrics" id="metrics"></div>
 
   <div class="sec-head"><div class="sec-title">Implementation Roadmap</div>
     <a href="timeline.html">Open full interactive timeline →</a></div>
+  <div class="subnote">The order of the work: what gets built first, next, and later. Open the interactive timeline to see how the pieces depend on each other and when they land.</div>
   <div class="roadmap">
     <div class="phase p1"><div class="pt">Phase 1 · &lt; 6 months</div><h4>Create visibility, accountability &amp; readiness</h4>
       <ul><li>VP of Research &amp; proactive ROC with defined decision rights</li><li>Defined strategy, priority service lines &amp; growth objectives</li><li>Research GL &amp; P&amp;L framework for spending visibility</li><li>Compliant effort reporting &amp; streamlined IRB deployed</li><li>Core systems selected &amp; deployed (Cayuse, CTMS, eReg)</li></ul></div>
@@ -155,22 +185,22 @@
 
 <script>
 const GOALS = [
-  { n:1, cat:"strategic", catLabel:"Strategic", title:"Unified Research Strategy & Governance", strategies:[
+  { n:1, cat:"strategic", catLabel:"Strategy & governance", title:"Unified Research Strategy & Governance", strategies:[
     { s:"Adopt a strong-center governance model", t:["Hire a VP of Research to own enterprise research growth","Empower the Research Oversight Council (ROC) — decision rights, membership, cadence"]},
     { s:"Define the enterprise research portfolio", t:["Set therapeutic-area mix, phase mix, and target scale","Anchor signature programs to the four institutes: Cancer, CV, Neuro, Children's"]},
     { s:"Charter the Jump Research Institute", t:["Ratify charter, Governing Council & standing committees","Set the 10-year growth arc: $35M → $140M active portfolio"]},
   ]},
-  { n:2, cat:"strategic", catLabel:"Strategic · Funding", title:"Diversify & Grow Competitive Funding", strategies:[
+  { n:2, cat:"strategic", catLabel:"Strategy & governance · Funding", title:"Diversify & Grow Competitive Funding", strategies:[
     { s:"Run funding as a strategic portfolio, not transactions", t:["Shift from submission support to competitive positioning","Operate the four dashboards: Opportunity, Portfolio, Project, Leadership"]},
     { s:"Build a majority industry- & grant-funded budget", t:["Diversify across federal, state, foundation, industry & community","Layer targeted philanthropic campaigns + intentional ministry subsidy"]},
     { s:"Align pursuit to Destination priorities", t:["Scholarship Councils for each institute match opportunities to priorities","Grow awards 35→90 and lift award rate to ≥25% as submissions scale"]},
   ]},
-  { n:3, cat:"operational", catLabel:"Operational", title:"Build the Research Operating Engine", strategies:[
+  { n:3, cat:"operational", catLabel:"Operations", title:"Build the Research Operating Engine", strategies:[
     { s:"Standardize execution across the ministry", t:["Centralized activation function + enterprise SOPs","Scale the <90-day activation advantage across all service lines"]},
     { s:"Establish an enterprise research P&L", t:["Dedicated research GL + per-study P&L (from ~50% today to full visibility)","Centralized contracting, budgeting & consistent cost recovery"]},
     { s:"Right-size the research support workforce", t:["CRC / pharmacist staffing model that scales with the portfolio","Central study intake & prioritization with KPI tracking"]},
   ]},
-  { n:4, cat:"operational", catLabel:"Operational · Academics", title:"Attract Talent & Advance Academic Affairs", strategies:[
+  { n:4, cat:"operational", catLabel:"Operations · Academics", title:"Attract Talent & Advance Academic Affairs", strategies:[
     { s:"Redesign clinician-researcher contracts (employed physicians) <span class='prio'>Priority</span>", t:["Build protected research effort (defined FTE) into medical-group employed-physician agreements","Align compensation, wRVU targets & funds flow so research time is credited — not financially penalized","Define research-effort tiers and an academic-rank / career pathway written into the contract"]},
     { s:"Stand up a physician-investigator talent model", t:["Protected-time policy, compensation model & career pathways","Grow the active PI base and career-development awards across the 10-year arc"]},
     { s:"Drive UME & GME academic affairs", t:["Embed learners in a research-rich environment; faculty appointments via partners","Connect the research enterprise to the education & recruitment pipeline"]},

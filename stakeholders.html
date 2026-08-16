@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Destination OSF · Stakeholders & Required Changes</title>
+<style>
+  :root{ color-scheme: light;
+    --brown:#5E4A34; --brown-dk:#3F3123; --brown-mid:#7A5E42;
+    --osf-blue:#00576B; --osf-blue-lt:#0a7183;
+    --osf-green:#4E8209; --osf-green-lt:#5f9c14;
+    --pampas:#F2EFEB; --tuatara:#333230;
+    --gold:#B9975B; --muted:#6f665c; --line:#e2ddd4; --card:#ffffff; }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--pampas);color:var(--tuatara);
+    font-family:'Segoe UI',Helvetica,Arial,sans-serif;line-height:1.45;}
+  .wrap{max-width:1080px;margin:0 auto;padding:20px 18px 70px;}
+  .back{font-size:12px;color:var(--osf-blue);text-decoration:none;font-weight:700;}
+  .back:hover{text-decoration:underline;}
+  .brand{font-size:11px;letter-spacing:2.5px;color:var(--brown);font-weight:700;text-transform:uppercase;margin-top:8px;}
+  h1{font-size:23px;margin:5px 0 3px;color:var(--brown-dk);font-weight:800;}
+  .tagline{font-size:13px;color:var(--muted);margin-bottom:14px;}
+  /* Explainer */
+  .explain{background:#fff;border:1px solid var(--line);border-left:6px solid var(--osf-blue);border-radius:11px;
+    padding:13px 16px;margin-bottom:14px;font-size:12.7px;}
+  .explain h3{margin:0 0 6px;font-size:11.5px;letter-spacing:1px;text-transform:uppercase;color:var(--osf-blue);}
+  .explain p{margin:0 0 7px;}
+  .explain p:last-child{margin-bottom:0;}
+  .explain b{color:var(--brown-dk);}
+  .draft{background:#F6E8C4;border:1px solid #E4CF9E;border-left:6px solid var(--gold);border-radius:10px;
+    padding:10px 14px;margin-bottom:14px;font-size:12px;color:var(--brown-dk);}
+  .draft b{color:var(--brown-dk);}
+  /* Filters */
+  .filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px;}
+  .filters .flabel{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-right:4px;}
+  .chip{border:1px solid var(--line);background:#fff;border-radius:20px;padding:5px 13px;font-size:12px;
+    cursor:pointer;color:var(--tuatara);font-weight:600;transition:all .15s;}
+  .chip:hover{border-color:var(--brown);}
+  .chip.active{color:#fff;border-color:transparent;background:var(--brown-dk);}
+  .expand-all{margin-left:auto;font-size:11.5px;color:var(--osf-blue);background:none;border:none;cursor:pointer;font-weight:700;}
+  /* Cards */
+  .list{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+  @media(max-width:720px){.list{grid-template-columns:1fr;} }
+  .sh{background:var(--card);border:1px solid var(--line);border-radius:11px;overflow:hidden;border-left:5px solid var(--brown);}
+  .sh.hidden{display:none;}
+  .sh[data-cat="gov"]{border-left-color:var(--brown);}
+  .sh[data-cat="inst"]{border-left-color:var(--osf-blue);}
+  .sh[data-cat="ops"]{border-left-color:var(--osf-green);}
+  .sh[data-cat="ext"]{border-left-color:var(--gold);}
+  .sh-head{padding:11px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;}
+  .sh-meta{flex:1;}
+  .sh-cat{font-size:9px;letter-spacing:1px;text-transform:uppercase;font-weight:700;color:var(--muted);}
+  .sh-title{font-size:13.5px;font-weight:800;color:var(--brown-dk);line-height:1.25;margin-top:2px;}
+  .newtag{display:inline-block;background:var(--gold);color:#fff;font-size:8px;font-weight:800;letter-spacing:.5px;
+    text-transform:uppercase;padding:1px 6px;border-radius:9px;margin-left:6px;vertical-align:middle;}
+  .chev{font-size:14px;transition:transform .2s;color:var(--brown-mid);}
+  .sh.open .chev{transform:rotate(90deg);}
+  .sh-body{max-height:0;overflow:hidden;transition:max-height .3s ease;}
+  .sh.open .sh-body{max-height:700px;}
+  .sh-inner{padding:2px 14px 13px;}
+  .sh-inner .ch-label{font-size:10px;letter-spacing:.8px;text-transform:uppercase;color:var(--osf-blue);font-weight:700;margin-bottom:5px;}
+  .sh-inner ul{list-style:none;margin:0;padding:0;}
+  .sh-inner li{font-size:12px;color:var(--tuatara);padding:3px 0 3px 15px;position:relative;line-height:1.4;}
+  .sh-inner li::before{content:"";position:absolute;left:3px;top:9px;width:5px;height:5px;border-radius:50%;background:var(--gold);}
+  .foot{margin-top:24px;border-top:2px solid var(--brown);padding-top:9px;font-size:11px;color:var(--muted);}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;font-size:11px;color:var(--muted);margin:2px 0 12px;}
+  .legend span{display:flex;align-items:center;gap:6px;}
+  .legend i{width:12px;height:12px;border-radius:3px;display:inline-block;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← Back to Strategic Map</a>
+  <div class="brand">Destination OSF · OSF HealthCare</div>
+  <h1>Stakeholders &amp; the Changes Required</h1>
+  <div class="tagline">Who must act for the research strategy to succeed — and what changes for each. Roles are listed by title, not by person.</div>
+
+  <div class="explain">
+    <h3>How to read this page</h3>
+    <p>Each card is a <b>role or group</b> whose work changes under the plan. <b>Click a card to open it</b> and see the specific changes required of that role. Use the filter to view one category at a time. The colored left edge shows the category.</p>
+    <p>Roles are named by <b>title only</b> — never by individual. A gold <span class="newtag" style="position:relative;top:-1px;">Proposed role</span> tag marks a position that <b>does not exist yet</b> and would need to be created.</p>
+  </div>
+
+  <div class="draft"><b>Draft for your editing.</b> The titles, categories, and change descriptions below are a starting point. Expect to rewrite them — adjust wording, add or remove roles, re-tag proposed positions, and refine each list to match how OSF actually operates.</div>
+
+  <div class="legend">
+    <span><i style="background:var(--brown)"></i> Governance &amp; executive</span>
+    <span><i style="background:var(--osf-blue)"></i> Institutes &amp; physicians</span>
+    <span><i style="background:var(--osf-green)"></i> Research operations &amp; enabling</span>
+    <span><i style="background:var(--gold)"></i> Mission, philanthropy &amp; external</span>
+  </div>
+
+  <div class="filters">
+    <span class="flabel">Filter</span>
+    <button class="chip active" data-cat="all">All</button>
+    <button class="chip" data-cat="gov">Governance</button>
+    <button class="chip" data-cat="inst">Institutes &amp; physicians</button>
+    <button class="chip" data-cat="ops">Operations &amp; enabling</button>
+    <button class="chip" data-cat="ext">Mission &amp; external</button>
+    <button class="expand-all" id="toggleAll">Expand all ▾</button>
+  </div>
+
+  <div class="list" id="list"></div>
+
+  <div class="foot">Titles only — no individuals named. "Proposed role" = a position not yet established. Change descriptions are planning drafts for OSF review and editing, derived from the Jump Research Institute charter and the Research Infrastructure Strategy Compendium.</div>
+</div>
+
+<script>
+/* =========================================================================
+   EDIT HERE. Each entry:
+     title    - role/group by TITLE only (no names)
+     cat      - "gov" | "inst" | "ops" | "ext"
+     isNew    - true if the role does not exist yet ("Proposed role" badge)
+     changes  - list of specific changes required of this role
+   ========================================================================= */
+const CATLABEL = {gov:"Governance & executive", inst:"Institutes & physicians", ops:"Research operations & enabling", ext:"Mission, philanthropy & external"};
+
+const STAKE = [
+  {title:"OSF HealthCare Executive Leadership", cat:"gov", isNew:false, changes:[
+    "Treat research as a strategic asset, not a cost center — and say so in enterprise strategy.",
+    "Approve the ministry subsidy as a declining bridge, with a defined glide path.",
+    "Ratify the Jump Research Institute charter and its decision rights.",
+    "Hold the enterprise accountable to agreed growth targets."]},
+  {title:"Chief Academic / Chief Medical Officer (Governing Council Chair)", cat:"gov", isNew:false, changes:[
+    "Chair the Governing Council and own progress against the objectives.",
+    "Keep research aligned with clinical strategy and the four institutes.",
+    "Represent research to the board and to external partners."]},
+  {title:"Chief Financial Officer", cat:"gov", isNew:false, changes:[
+    "Stand up a dedicated research P&L and general-ledger category.",
+    "Fund one-time and recurring foundational investment.",
+    "Set cost-recovery policy and a standardized rate schedule.",
+    "Report subsidy vs. external funding to leadership."]},
+  {title:"VP of Research / Institute Director", cat:"gov", isNew:true, changes:[
+    "New executive accountable for enterprise research growth.",
+    "Set portfolio priorities (therapeutic area, phase, scale).",
+    "Own the operating model, workforce model, and shared services.",
+    "Act as Governing Council Vice Chair."]},
+  {title:"Research Oversight Council (ROC)", cat:"gov", isNew:false, changes:[
+    "Strengthened authority and clarified decision rights.",
+    "Regular cadence with quorum and documented decisions.",
+    "Approve priorities, investments, and enterprise standards."]},
+
+  {title:"Clinical Institute Directors (Cancer, CV, Neuro, Children's)", cat:"inst", isNew:false, changes:[
+    "Bring institute priorities and investigators to the Council.",
+    "Sponsor trials and investigator-initiated studies within the institute.",
+    "Connect research capacity to complexity-capacity and transfer strategy."]},
+  {title:"Institute Scholarship Councils", cat:"inst", isNew:false, changes:[
+    "Formalize a council for each institute (Neuro still in planning).",
+    "Match funding opportunities to each institute's strategic priorities.",
+    "Liaise between the Foundation, institutes, and academic community."]},
+  {title:"Employed Physician-Investigators", cat:"inst", isNew:false, changes:[
+    "Protected research time defined explicitly in their contracts.",
+    "Clear research-effort tiers and an academic career pathway.",
+    "Expectations for scholarship and grant participation."]},
+  {title:"Nursing Research Leadership (CNO / Nurse Scientists)", cat:"inst", isNew:false, changes:[
+    "A formal nursing-research voice on the Council.",
+    "Support for nurse-led studies and evidence-based practice."]},
+
+  {title:"Director, Office of Sponsored Programs", cat:"ops", isNew:false, changes:[
+    "Own grant pursuit and administration end-to-end.",
+    "Maintain policies, records, and regulatory/financial integrity.",
+    "Serve as Council secretary."]},
+  {title:"Grants Administration & Grants Accounting", cat:"ops", isNew:false, changes:[
+    "Operate as a strategic portfolio — dashboards and pipeline, not one-off submissions.",
+    "Expand pre- and post-award capacity as volume grows.",
+    "Deliver per-study P&L and consistent cost recovery."]},
+  {title:"Clinical Research & Regulatory Coordinators (CRCs)", cat:"ops", isNew:false, changes:[
+    "Scale headcount to study volume (target ~8–10 studies per CRC).",
+    "Work to standardized SOPs and a centralized activation function."]},
+  {title:"Research Compliance, Integrity & IRB", cat:"ops", isNew:false, changes:[
+    "Federally compliant effort reporting and proactive post-approval monitoring.",
+    "Streamlined, non-duplicative IRB pathways.",
+    "Oversee conflict-of-interest and responsible conduct of research."]},
+  {title:"General Counsel / Contracting", cat:"ops", isNew:false, changes:[
+    "Centralized, faster contracting with standardized clinical-trial agreements.",
+    "Support standardized rate schedules and manage regulatory risk."]},
+  {title:"Research IT & Analytics", cat:"ops", isNew:true, changes:[
+    "Deploy Cayuse, CTMS, and eReg as a single source of truth.",
+    "Build biostatistics/analytics capacity with a request-prioritization process.",
+    "Evaluate AI trial-matching and patient identification (later horizon)."]},
+  {title:"Investigational Pharmacy & Research Laboratories", cat:"ops", isNew:false, changes:[
+    "Expand investigational pharmacy and lab capacity.",
+    "Size cores to the study types and volumes the portfolio demands."]},
+
+  {title:"Medical Group Leadership", cat:"inst", isNew:false, changes:[
+    "Co-own the clinician-researcher contract redesign for employed physicians.",
+    "Adjust employment agreements so research time is protected and credited.",
+    "Align funds flow so research effort is not financially penalized."]},
+  {title:"Physician Compensation Committee", cat:"inst", isNew:false, changes:[
+    "Define how protected research time and research productivity are valued and paid.",
+    "Approve the compensation framework for physician-investigators."]},
+  {title:"GME Designated Institutional Official & UME / Academic Partner Liaison", cat:"inst", isNew:false, changes:[
+    "Align the education pipeline with the research enterprise.",
+    "Support faculty appointments, trainee scholarship, and recruitment/retention."]},
+  {title:"Human Resources", cat:"ops", isNew:false, changes:[
+    "Create research career ladders and job families.",
+    "Support recruitment and retention of physician-scientists and research staff."]},
+
+  {title:"Mission & Ethics Leadership", cat:"ext", isNew:false, changes:[
+    "Ensure activities reflect the Catholic mission and community benefit.",
+    "Steward ethical conduct across the research enterprise."]},
+  {title:"OSF Foundation / Philanthropy", cat:"ext", isNew:false, changes:[
+    "Build the philanthropic case for the enabling institute.",
+    "Fund the differentiating bets (Phase 1 unit, biobank, NCI infrastructure).",
+    "Align campaigns to research priorities."]},
+  {title:"Academic Partners (Universities / Medical School)", cat:"ext", isNew:false, changes:[
+    "Formalize affiliation agreements and joint appointments.",
+    "Support shared training and co-investigation."]},
+  {title:"Industry Sponsors & CROs", cat:"ext", isNew:false, changes:[
+    "Standardized agreements and rate schedules.",
+    "Faster activation — making OSF a partner of choice."]},
+  {title:"Federal & State Funding Agencies", cat:"ext", isNew:false, changes:[
+    "Grow competitive submissions and a compliant stewardship posture.",
+    "Win and manage a larger, more diversified award portfolio."]},
+  {title:"Patients & Community", cat:"ext", isNew:false, changes:[
+    "Expanded local access to trials and cutting-edge therapies.",
+    "A community and patient voice in prioritization and access."]},
+];
+
+const listEl=document.getElementById('list');
+STAKE.forEach(s=>{
+  const el=document.createElement('div'); el.className='sh'; el.dataset.cat=s.cat;
+  const badge = s.isNew ? ` <span class="newtag">Proposed role</span>` : "";
+  const changes = s.changes.map(c=>`<li>${c}</li>`).join("");
+  el.innerHTML=`<div class="sh-head">
+      <div class="sh-meta"><div class="sh-cat">${CATLABEL[s.cat]}</div>
+      <div class="sh-title">${s.title}${badge}</div></div>
+      <div class="chev">▶</div></div>
+    <div class="sh-body"><div class="sh-inner">
+      <div class="ch-label">Changes required</div><ul>${changes}</ul></div></div>`;
+  el.querySelector('.sh-head').addEventListener('click',()=>el.classList.toggle('open'));
+  listEl.appendChild(el);
+});
+document.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>{
+  document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
+  c.classList.add('active');
+  const cat=c.dataset.cat;
+  document.querySelectorAll('.sh').forEach(s=>{
+    s.classList.toggle('hidden', cat!=='all' && s.dataset.cat!==cat);
+  });
+}));
+let allOpen=false;
+document.getElementById('toggleAll').addEventListener('click',function(){
+  allOpen=!allOpen;
+  document.querySelectorAll('.sh').forEach(s=>s.classList.toggle('open',allOpen));
+  this.textContent=allOpen?'Collapse all ▴':'Expand all ▾';
+});
+</script>
+</body>
+</html>
